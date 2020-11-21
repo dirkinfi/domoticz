@@ -1,0 +1,10 @@
+return {
+	on = {
+		timer = {
+			'at 18:00',
+		}
+	},
+	execute = function(dz, timer)
+		dz.groups('BenedenVerlichting').switchOn().checkFirst().forMin(240)
+	end
+}

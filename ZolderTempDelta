@@ -1,0 +1,25 @@
+--[[
+Dit script berekent iedere 5 minuten het verschil tussen de binnen- en buitentemperatuur voor de zolder.
+
+]]--
+
+local dz = domoticz -- nodig om afkorting dz te kunnen gebruiken
+
+return {
+   on = { timer = { "every 5 minutes" }},     -- Change to your liking to 1,2,3,4,5,6,10,12,15 or 20
+
+   execute = function(dz, item)
+
+       local TempDelta      = dz.devices("ZolderTempDelta")  -- 349/ZolderTempDelta is ID for dummy sensor
+       local TempInside     = dz.devices("t10YfkeZolder").temperature
+       local TempOutside    = dz.devices("Buienradar").temperature
+
+       TempDelta.updateTemperature(dz.utils.round(TempInside - TempOutside,1)) -- Rounded to one decimal
+
+-- 	    dz.log('Temperatuur binnen: '..dz.utils.round("TempInside"),1).temperature, dz.LOG_INFO)
+-- 	    dz.log('Temperatuur binnen: '..dz.utils.round(dz.devices("TempYfke").temperature,1), dz.LOG_INFO)
+-- 	    dz.log('Temperatuur buiten: '..dz.utils.round(dz.devices("Buienradar").temperature,1), dz.LOG_INFO)
+-- 	    dz.log('Temparatuur delta: '..dz.devices("ZolderTempDelta").temperature, dz.LOG_INFO)
+
+   end
+}

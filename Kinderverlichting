@@ -1,0 +1,11 @@
+return {
+	on = {
+		timer = {
+			'at 6:59',					-- specific time
+		}
+	},
+	execute = function(dz, timer)
+--		dz.log('Timer event was triggered by ' .. timer.trigger, dz.LOG_INFO)
+		dz.groups('Kinderverlichting').switchOn().checkFirst().forMin(10)
+	end
+}

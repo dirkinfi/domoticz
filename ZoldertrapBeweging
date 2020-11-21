@@ -1,0 +1,27 @@
+
+-- DOEL: als er beweging is op de motionsensor ('triggerDevice'),
+-- dan het licht aanzetten ('targetLight')
+-- voor de instelde tijd ('durationSec')
+
+-- local triggerDevice = 'DummySwitch01'
+local triggerDevice = 'KeruiZolder'
+local targetLight = 'Zoldertrap'
+local durationSec = 30
+
+return {
+	on = {
+		devices =    {triggerDevice}
+	},
+	execute = function(dz, trigger)
+--		dz.log('Sensor state: '..trigger.state, dz.LOG_INFO)
+--		dz.log('TargetLight state: '..dz.devices(targetLight).state, dz.LOG_INFO)
+        if (dz.time.matchesRule('at 17:30-7:00')) then -- alleen 's nachts
+            dz.devices(targetLight).switchOff().checkFirst().afterSec(durationSec) -- als ie al aanstaat, schedule over xx seconden een off
+            dz.devices(targetLight).switchOn().checkFirst().forSec(durationSec) -- als ie uitstaat, zet nu een on + schedule over xx seconden een off
+        else
+--            dz.log('Lamp niet aan want buiten de ingestelde tijden')
+        end
+
+--    trigger.switchOff().silent() -- trigger meteen weer terugzetten naar normale state blijkt niet nodig
+	end
+}
