@@ -18,15 +18,15 @@ return {
     if (dz.time.matchesRule('at 17:30-7:00')) then -- alleen 's nachts
         if zolderTemp < targetTemp then
             dz.log('ZolderVerwarming --- Temperatuur onder '..targetTemp..', namelijk: '..dz.utils.round(zolderTemp,2), dz.LOG_INFO)
-            dz.devices(targetDevice).switchOn().checkFirst() -- als ie uitstaat, zet nu een on
+            dz.devices(targetDevice).switchOn() -- zet 'm aan
         else
             dz.log('ZolderVerwarming --- Temperatuur boven '..targetTemp..', namelijk: '..dz.utils.round(zolderTemp,2), dz.LOG_INFO)
-            dz.devices(targetDevice).switchOff().checkFirst() -- als ie aanstaat, zet nu een off
+            dz.devices(targetDevice).switchOff() -- zet 'm uit, het is warm genoeg
         end
     else
         if (dz.time.matchesRule('at 7:00-8:00')) then -- 's ochtends zeker weten dat ie uit staat
         dz.log('ZolderVerwarming --- Ochtend-uitzetactie', dz.LOG_INFO)
-        dz.devices(targetDevice).switchOff().checkFirst() -- als ie aanstaat, zet nu een off
+        dz.devices(targetDevice).switchOff() -- zet 'm uit, de nacht is voorbij
         end
     dz.log('ZolderVerwarming --- Niets gedaan', dz.LOG_INFO)
     end
