@@ -1,0 +1,40 @@
+--[[
+Dit script berekent iedere 5 minuten of de verwarming bij Yfke aangezet zou moeten worden.
+
+]]--
+
+local dz = domoticz -- nodig om afkorting dz te kunnen gebruiken
+local targetDevice = 'Yfke(d2)' -- nog checken of dit de juiste schakelaar is, en of dit echt werkt
+
+return {
+   on = { timer = { "every 5 minutes" }},     -- Change to your liking to 1,2,3,4,5,6,10,12,15 or 20
+
+   execute = function(dz, item)
+
+    local zolderTemp     = dz.devices("t10YfkeZolder").temperature
+
+    if (dz.time.matchesRule('at 17:30-7:00')) then -- alleen 's nachts
+        if zolderTemp < 15 then
+            dz.log('Temperatuur onder 15: ', dz.LOG_INFO)
+            dz.log(dz.utils.round(zolderTemp,2))
+            dz.devices(targetDevice).switchOn().checkFirst() -- als ie uitstaat, zet nu een on
+        else
+            dz.log('Temperatuur boven 15: ', dz.LOG_INFO)
+            dz.log(dz.utils.round(zolderTemp,2))
+            dz.devices(targetDevice).switchOff().checkFirst() -- als ie aanstaat, zet nu een off
+        end
+    else
+        if (dz.time.matchesRule('at 7:00-8:00')) then -- 's ochtends zeker weten dat ie uit staat
+        dz.log('Ochtend-uitzetactie', dz.LOG_INFO)
+        dz.devices(targetDevice).switchOff().checkFirst() -- als ie aanstaat, zet nu een off
+        end
+    end
+
+
+-- 	    dz.log('Temperatuur binnen: '..dz.utils.round("TempInside"),1).temperature, dz.LOG_INFO)
+-- 	    dz.log('Temperatuur binnen: '..dz.utils.round(dz.devices("TempYfke").temperature,1), dz.LOG_INFO)
+-- 	    dz.log('Temperatuur buiten: '..dz.utils.round(dz.devices("Buienradar").temperature,1), dz.LOG_INFO)
+-- 	    dz.log('Temparatuur delta: '..dz.devices("ZolderTempDelta").temperature, dz.LOG_INFO)
+
+end
+}
