@@ -5,7 +5,7 @@
 
 -- local triggerDevice = 'DummySwitch01'
 local triggerDevice = 'Kerui02zijkant'
-local targetLight = 'zijkanthuis(k13)' -- LET OP: deze schakelt samen met kraai om een of andere reden
+local targetLight = 'zijkanthuis(k13)'
 local durationSec = 60
 
 return {
