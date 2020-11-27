@@ -2,8 +2,8 @@
 -- DOEL: als er beweging is op de motionsensor ('triggerDevice'),
 -- dan het licht aanzetten ('targetLight')
 -- voor de instelde tijd ('durationSec')
+-- EN permanent branden tijdens het ingestelde tijdvak
 
--- local triggerDevice = 'DummySwitch01'
 local triggerDevice = 'Kerui02zijkant'
 local targetLight = 'zijkanthuis(k13)'
 local durationSec = 60
@@ -11,25 +11,19 @@ local durationSec = 60
 return {
 	on = {
 		devices =    {triggerDevice}, -- als de bewegingssensor getriggerd wordt
-		timer = { "every 15 minutes" }
+		timer = { "every 15 minutes" } -- iedere 15 minuten checken voor de vaste aan/uit
 	},
 	execute = function(dz, trigger)
---		dz.log('Sensor state: '..trigger.state, dz.LOG_INFO)
---		dz.log('TargetLight state: '..dz.devices(targetLight).state, dz.LOG_INFO)
         if (dz.time.matchesRule('at 17:00-19:45')) then -- 's avonds branden
             dz.log('Zijkantbeweging - avond branden', dz.LOG_INFO)
---            dz.devices(targetLight).switchOff().checkFirst().afterSec(durationSec) -- als ie al aanstaat, schedule over xx seconden een off
             dz.devices(targetLight).switchOn().checkFirst() -- als ie uitstaat, zet nu een on + schedule over xx seconden een off
-        elseif (dz.time.matchesRule('at 19:45-09:00')) then -- 's nachts aanspringen op beweging; TIJDELIJK TOT 19:00) uur
+        elseif (dz.time.matchesRule('at 19:45-09:00')) then -- 's nachts aanspringen op beweging
             dz.log('Zijkantbeweging - nacht beweging', dz.LOG_INFO)
             dz.devices(targetLight).switchOff().checkFirst().afterSec(durationSec) -- als ie al aanstaat, schedule over xx seconden een off
             dz.devices(targetLight).switchOn().checkFirst().forSec(durationSec) -- als ie uitstaat, zet nu een on + schedule over xx seconden een off
---            dz.log('Lamp niet aan want buiten de ingestelde tijden')
         else
             dz.log('Zijkantbeweging - overdag uit', dz.LOG_INFO)
             dz.devices(targetLight).switchOff().checkFirst()
         end
-
---    trigger.switchOff().silent() -- trigger meteen weer terugzetten naar normale state blijkt niet nodig
 	end
 }
