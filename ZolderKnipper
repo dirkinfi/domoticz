@@ -1,0 +1,36 @@
+-- DOEL: de kerstverlichting bij Yfke laten knipperen zodat ze weet dat het tijd is om te gaan slapen
+
+
+local targetLight = 'Zolderkerst' -- kerstverlichting op zolder bij Yfke
+
+return {
+	on = {
+		timer = {
+			'at 20:00',
+--			'every 1 minutes',
+		}
+	},
+	execute = function(dz, timer)
+--	    dz.log('Hij runt nu het script', dz.LOG_INFO)
+		 if (dz.devices(targetLight).state == 'On') then
+--		    dz.log('Hij staat aan', dz.LOG_INFO)
+		    dz.devices(targetLight).switchOff().afterSec(1)
+            dz.devices(targetLight).switchOn().afterSec(2)
+            dz.devices(targetLight).switchOff().afterSec(3)
+            dz.devices(targetLight).switchOn().afterSec(4)
+            dz.devices(targetLight).switchOff().afterSec(5)
+            dz.devices(targetLight).switchOn().afterSec(6)
+            dz.devices(targetLight).switchOff().afterSec(7)
+--            dz.log('Klaar met het zetten van de toggles', dz.LOG_INFO)
+		 elseif (dz.devices(targetLight).state == 'Off') then
+--		    dz.log('Hij staat uit', dz.LOG_INFO)
+		    dz.devices(targetLight).switchOn().afterSec(2)
+            dz.devices(targetLight).switchOff().afterSec(3)
+            dz.devices(targetLight).switchOn().afterSec(4)
+            dz.devices(targetLight).switchOff().afterSec(5)
+            dz.devices(targetLight).switchOn().afterSec(6)
+            dz.devices(targetLight).switchOff().afterSec(7)
+--           dz.log('Klaar met het zetten van de toggles', dz.LOG_INFO)
+		 end
+	end
+}
