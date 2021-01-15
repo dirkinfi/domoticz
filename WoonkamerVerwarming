@@ -1,0 +1,32 @@
+--[[
+Dit script berekent iedere 5 minuten of de vertilator van de verwarming in de woonkamer aangezet zou moeten worden.
+
+]]--
+
+local dz = domoticz -- nodig om afkorting dz te kunnen gebruiken
+local targetDevice = 'verwarming(k12)' -- LET OP deze schakelaar bestaat nog niet!
+local targetTemp = 30
+
+return {
+   on = { timer = { "every 5 minutes" }},     -- Change to your liking to 1,2,3,4,5,6,10,12,15 or 20
+
+   execute = function(dz, item)
+
+    local currentTemp     = dz.devices("t03verwarmingwoonkamer").temperature
+
+    if (dz.time.matchesRule('at 6:30-22:00')) then -- alleen overdag
+        if currentTemp > targetTemp then
+            dz.log('WoonkamerVerwarming --- Temperatuur boven '..targetTemp..', namelijk: '..dz.utils.round(currentTemp,2), dz.LOG_INFO)
+            dz.devices(targetDevice).switchOn() -- zet 'm aan
+        else
+            dz.log('WoonkamerVerwarming --- Temperatuur onder '..targetTemp..', namelijk: '..dz.utils.round(currentTemp,2), dz.LOG_INFO)
+            dz.devices(targetDevice).switchOff() -- zet 'm uit, de verwarming staat niet aan
+        end
+    elseif (dz.time.matchesRule('at 22:00-23:00')) then -- 's avonds zeker weten dat ie uit staat
+        dz.log('WoonkamerVerwarming --- Avond-uitzetactie', dz.LOG_INFO)
+        dz.devices(targetDevice).switchOff() -- zet 'm uit, de dag is voorbij
+    else
+    dz.log('WoonkamerVerwarming --- Niets gedaan, WoonkamerVerwarmingTemp is: '..dz.utils.round(currentTemp,2), dz.LOG_INFO)
+    end
+end
+}
